@@ -1,10 +1,10 @@
-{-# LANGUAGE
-  MultiParamTypeClasses,
+{-# LANGUAGE CPP,
   ConstraintKinds,
+  MultiParamTypeClasses,
   QuasiQuotes,
+  RankNTypes,
   ScopedTypeVariables,
-  UndecidableInstances,
-  RankNTypes
+  UndecidableInstances
   #-}
 module LLVM.Internal.Attribute where
 
@@ -73,10 +73,12 @@ instance Monad m => EncodeM m A.PA.ParameterAttribute (Ptr FFI.ParameterAttrBuil
       A.PA.ByVal _ -> inconsistentCases "ParameterAttribute" a
       A.PA.InAlloca _ -> inconsistentCases "ParameterAttribute" a
       A.PA.SRet _ -> inconsistentCases "ParameterAttribute" a
+#if __GLASGOW_HASKELL__ < 900
       A.PA.Alignment _ -> inconsistentCases "ParameterAttribute" a
       A.PA.Dereferenceable _ -> inconsistentCases "ParameterAttribute" a
       A.PA.DereferenceableOrNull _ -> inconsistentCases "ParameterAttribute" a
       A.PA.StringAttribute _ _ -> inconsistentCases "ParameterAttribute" a
+#endif
 
 instance Monad m => EncodeM m A.FA.FunctionAttribute (Ptr FFI.FunctionAttrBuilder -> EncodeAST ()) where
   encodeM (A.FA.StringAttribute kind value) = return $ \b -> do
@@ -145,10 +147,12 @@ instance Monad m => EncodeM m A.FA.FunctionAttribute (Ptr FFI.FunctionAttrBuilde
       A.FA.UWTable -> FFI.functionAttributeKindUWTable
       A.FA.WillReturn -> FFI.functionAttributeKindWillReturn
       A.FA.WriteOnly -> FFI.functionAttributeKindWriteOnly
+      A.FA.VScaleRange _ _ -> inconsistentCases "FunctionAttribute" a
+#if __GLASGOW_HASKELL__ < 900
       A.FA.AllocSize _ _ -> inconsistentCases "FunctionAttribute" a
       A.FA.StackAlignment _ -> inconsistentCases "FunctionAttribute" a
       A.FA.StringAttribute _ _ -> inconsistentCases "FunctionAttribute" a
-      A.FA.VScaleRange _ _ -> inconsistentCases "FunctionAttribute" a
+#endif
 
 instance DecodeM DecodeAST A.PA.ParameterAttribute FFI.ParameterAttribute where
   decodeM a = do

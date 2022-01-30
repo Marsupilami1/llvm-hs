@@ -8,6 +8,7 @@ module Control.Monad.AnyCont (
     AnyContT(..),
     MonadTransAnyCont(..),
     runAnyContT,
+    runAnyContT',
     withAnyContT,
     mapAnyContT
   ) where

@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE DefaultSignatures #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
@@ -5,7 +6,6 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE UndecidableInstances #-} -- For MonadState s (ModuleBuilderT m) instance
-{-# LANGUAGE CPP #-}
 
 module LLVM.IRBuilder.Monad where
 
@@ -26,6 +26,10 @@ import Control.Monad.State.Strict
 import Control.Monad.Trans.Maybe
 #if !(MIN_VERSION_mtl(2,2,2))
 import Control.Monad.Trans.Identity
+#endif
+
+#if __GLASGOW_HASKELL__ < 808
+import Control.Monad.Fail (MonadFail)
 #endif
 
 import Data.Bifunctor
